@@ -1,0 +1,763 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SIGAP HUMAS - Lapas Kelas III Rangkasbitung</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        body {
+            font-family: 'Poppins', 'Inter', sans-serif;
+            background-color: #f8fafc;
+        }
+        .bg-gov-navy { background-color: #0B2545; }
+        .text-gov-navy { color: #0B2545; }
+        .border-gov-navy { border-color: #0B2545; }
+        .bg-gov-gold { background-color: #EEB902; }
+        .text-gov-gold { color: #EEB902; }
+        .hover-gov-navy:hover { background-color: #134074; }
+        
+        /* Animasi dan Transisi Sidebar */
+        .sidebar-transition { transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+        .sidebar-collapsed { width: 5rem; }
+        .sidebar-collapsed .txt-label, .sidebar-collapsed .profile-box, .sidebar-collapsed .logo-text { display: none; }
+        .sidebar-collapsed .menu-icon-center { justify-content: center; padding-left: 0; padding-right: 0; }
+    </style>
+</head>
+<body class="text-slate-800 antialiased">
+
+    <div id="loginPage" class="fixed inset-0 z-50 flex items-center justify-center bg-gov-navy px-4">
+        <div class="bg-white rounded-2xl shadow-2xl overflow-hidden max-w-md w-full p-8 border-b-8 border-gov-gold">
+            <div class="text-center mb-6">
+                <div class="mx-auto w-20 h-20 bg-slate-50 rounded-full flex items-center justify-center border-2 border-gov-gold shadow-sm mb-3">
+                    <i class="fa-solid fa-building-shield text-3xl text-gov-navy"></i>
+                </div>
+                <h1 class="text-2xl font-bold text-gov-navy tracking-tight">SIGAP HUMAS</h1>
+                <p class="text-xs font-semibold text-slate-500 uppercase tracking-wider mt-0.5">Lapas Kelas III Rangkasbitung</p>
+            </div>
+
+            <div id="loginErrorMsg" class="hidden mb-4 p-3 bg-rose-50 text-rose-700 text-xs rounded-xl flex items-center gap-2 border border-rose-200">
+                <i class="fa-solid fa-circle-exclamation text-sm"></i>
+                <span>Username atau password salah. Silakan periksa kembali!</span>
+            </div>
+
+            <form id="formLoginUtama" onsubmit="handleProsesLogin(event)">
+                <div class="mb-4">
+                    <label class="block text-xs font-bold text-slate-600 mb-1.5 uppercase tracking-wide">Username</label>
+                    <div class="relative">
+                        <span class="absolute inset-y-0 left-0 flex items-center pl-3.5 text-slate-400">
+                            <i class="fa-solid fa-user-shield"></i>
+                        </span>
+                        <input type="text" id="inputUser" required class="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-900 text-sm transition" placeholder="Masukkan username">
+                    </div>
+                </div>
+                <div class="mb-6">
+                    <label class="block text-xs font-bold text-slate-600 mb-1.5 uppercase tracking-wide">Password</label>
+                    <div class="relative">
+                        <span class="absolute inset-y-0 left-0 flex items-center pl-3.5 text-slate-400">
+                            <i class="fa-solid fa-key"></i>
+                        </span>
+                        <input type="password" id="inputPass" required class="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-900 text-sm transition" placeholder="••••••••">
+                    </div>
+                </div>
+                <button type="submit" id="btnLoginSubmit" class="w-full bg-gov-navy hover-gov-navy text-white font-medium py-3 rounded-xl shadow-lg transition-all duration-200 flex items-center justify-center gap-2">
+                    <span>Masuk ke Aplikasi</span>
+                    <i class="fa-solid fa-right-to-bracket text-xs"></i>
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <div id="mainSystemPage" class="hidden min-h-screen flex flex-col md:flex-row">
+        
+        <aside id="sidebarNav" class="sidebar-transition w-full md:w-64 bg-gov-navy text-white flex flex-col shadow-2xl z-30 shrink-0">
+            <div class="p-4 flex items-center justify-between border-b border-slate-700/60 h-20">
+                <div class="flex items-center gap-3 logo-text">
+                    <div class="w-9 h-9 bg-white/10 rounded-lg flex items-center justify-center border border-gov-gold/40">
+                        <i class="fa-solid fa-landmark text-gov-gold text-base"></i>
+                    </div>
+                    <div>
+                        <h2 class="font-bold text-xs tracking-wide">Lapas Kelas III</h2>
+                        <span class="text-[10px] text-slate-400 block font-medium">Rangkasbitung</span>
+                    </div>
+                </div>
+                <button onclick="toggleSidebarMenu()" class="text-slate-300 hover:text-white p-2 rounded-lg bg-slate-800/60 mx-auto md:mx-0">
+                    <i class="fa-solid fa-bars-staggered"></i>
+                </button>
+            </div>
+
+            <div class="p-4 mx-3 my-4 bg-slate-800/40 rounded-xl flex items-center gap-3 profile-box border border-slate-700/40">
+                <div class="w-10 h-10 bg-gov-gold text-gov-navy font-bold rounded-full flex items-center justify-center shadow-inner">
+                    <i class="fa-solid fa-user-tie text-lg"></i>
+                </div>
+                <div>
+                    <h4 id="userAktifNama" class="text-xs font-bold">Pegawai</h4>
+                    <span id="userAktifRole" class="text-[9px] bg-blue-950 text-gov-gold px-2 py-0.5 rounded font-bold tracking-wide uppercase mt-0.5 inline-block">User</span>
+                </div>
+            </div>
+
+            <nav class="flex-1 px-3 space-y-1">
+                <button onclick="switchMenuTab('dashboard')" id="menu-dashboard" class="w-full flex items-center gap-4 px-4 py-3 text-gov-gold bg-white/10 menu-icon-center rounded-xl font-medium text-sm transition-all">
+                    <i class="fa-solid fa-chart-line text-base text-center w-5"></i>
+                    <span class="txt-label">Dashboard</span>
+                </button>
+                <button onclick="switchMenuTab('arsip')" id="menu-arsip" class="w-full flex items-center gap-4 px-4 py-3 text-slate-300 hover:text-white hover:bg-white/5 menu-icon-center rounded-xl font-medium text-sm transition-all">
+                    <i class="fa-solid fa-cabinet-filing text-base text-center w-5"></i>
+                    <span class="txt-label">Daftar Arsip</span>
+                </button>
+                <button onclick="switchMenuTab('unggah')" id="menu-unggah" class="w-full flex items-center gap-4 px-4 py-3 text-slate-300 hover:text-white hover:bg-white/5 menu-icon-center rounded-xl font-medium text-sm transition-all">
+                    <i class="fa-solid fa-circle-arrow-up text-base text-center w-5"></i>
+                    <span class="txt-label">Unggah Arsip</span>
+                </button>
+            </nav>
+
+            <div class="p-3 border-t border-slate-700/60">
+                <button onclick="handleProsesLogout()" class="w-full flex items-center gap-4 px-4 py-3 text-rose-400 hover:text-rose-300 hover:bg-rose-950/20 menu-icon-center rounded-xl font-medium text-sm transition-all">
+                    <i class="fa-solid fa-power-off text-base text-center w-5"></i>
+                    <span class="txt-label">Keluar Sistem</span>
+                </button>
+            </div>
+        </aside>
+
+        <div class="flex-1 flex flex-col min-w-0">
+            
+            <header class="bg-white border-b border-slate-200 px-6 py-4 flex flex-col sm:flex-row items-center justify-between gap-4 shadow-sm h-auto md:h-20 shrink-0">
+                <div class="w-full sm:max-w-md relative">
+                    <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-slate-400">
+                        <i class="fa-solid fa-magnifying-glass text-xs"></i>
+                    </span>
+                    <input type="text" id="globalSearchBarInput" oninput="jalankanPencarianGlobal(this.value)" class="w-full pl-9 pr-4 py-2 border border-slate-200 bg-slate-50 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-900 text-xs transition" placeholder="Cari arsip berdasarkan Nama, Jenis, atau Tanggal...">
+                </div>
+
+                <div class="flex items-center gap-2.5 bg-slate-100/80 px-4 py-2 rounded-xl text-slate-600 text-xs font-semibold border border-slate-200/50">
+                    <i class="fa-solid fa-clock text-gov-navy"></i>
+                    <span id="liveClockWidget">Menyinkronkan Waktu...</span>
+                </div>
+            </header>
+
+            <main class="flex-1 p-6 overflow-y-auto">
+
+                <section id="view-dashboard" class="space-y-6">
+                    <div class="bg-gradient-to-br from-slate-900 via-slate-800 to-gov-navy text-white rounded-2xl p-6 shadow-md relative overflow-hidden border-r-4 border-gov-gold">
+                        <div class="relative z-10">
+                            <h2 class="text-xl font-bold md:text-2xl">Selamat Datang, <span class="text-gov-gold">Lapaskas!</span></h2>
+                            <p class="text-xs text-slate-300 mt-1.5 max-w-xl leading-relaxed">Sistem Informasi Digitalisasi & Pengarsipan Humas (SIGAP). Seluruh data angka, arsip dokumen, dan catatan agenda tersimpan selamanya di server awan aman dan tersinkronisasi di semua gawai perangkat login.</p>
+                        </div>
+                        <i class="fa-solid fa-cloud-bolt text-9xl absolute -right-4 -bottom-6 text-white/5 pointer-events-none"></i>
+                    </div>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                        <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm flex items-center justify-between">
+                            <div>
+                                <p class="text-xs text-slate-500 font-bold uppercase tracking-wider">Total Dokumentasi</p>
+                                <h3 id="statTotalArsip" class="text-3xl font-bold text-gov-navy mt-1">0</h3>
+                            </div>
+                            <div class="w-12 h-12 bg-blue-50 rounded-xl flex items-center justify-center text-gov-navy text-lg border border-blue-100 shadow-sm"><i class="fa-solid fa-boxes-stacked"></i></div>
+                        </div>
+                        <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm flex items-center justify-between">
+                            <div>
+                                <p class="text-xs text-slate-500 font-bold uppercase tracking-wider">Kategori Foto</p>
+                                <h3 id="statTotalFoto" class="text-3xl font-bold text-amber-600 mt-1">0</h3>
+                            </div>
+                            <div class="w-12 h-12 bg-amber-50 rounded-xl flex items-center justify-center text-amber-600 text-lg border border-amber-100 shadow-sm"><i class="fa-solid fa-images"></i></div>
+                        </div>
+                        <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm flex items-center justify-between">
+                            <div>
+                                <p class="text-xs text-slate-500 font-bold uppercase tracking-wider">Kategori Video</p>
+                                <h3 id="statTotalVideo" class="text-3xl font-bold text-rose-600 mt-1">0</h3>
+                            </div>
+                            <div class="w-12 h-12 bg-rose-50 rounded-xl flex items-center justify-center text-rose-600 text-lg border border-rose-100 shadow-sm"><i class="fa-solid fa-video"></i></div>
+                        </div>
+                        <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm flex items-center justify-between">
+                            <div>
+                                <p class="text-xs text-slate-500 font-bold uppercase tracking-wider">File Dokumen</p>
+                                <h3 id="statTotalDokumen" class="text-3xl font-bold text-emerald-600 mt-1">0</h3>
+                            </div>
+                            <div class="w-12 h-12 bg-emerald-50 rounded-xl flex items-center justify-center text-emerald-600 text-lg border border-emerald-100 shadow-sm"><i class="fa-solid fa-file-invoice"></i></div>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                        <div class="lg:col-span-2 space-y-6">
+                            <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm">
+                                <h4 class="font-bold text-xs text-gov-navy mb-4 uppercase tracking-wider flex items-center gap-2"><i class="fa-solid fa-bolt text-gov-gold"></i> Shortcut Unggah File Cepat</h4>
+                                <div class="grid grid-cols-3 gap-3">
+                                    <button onclick="switchMenuTab('unggah')" class="p-4 bg-slate-50 border border-slate-200 hover:border-gov-navy rounded-xl flex flex-col items-center justify-center gap-2 group transition-all">
+                                        <i class="fa-solid fa-camera text-xl text-slate-400 group-hover:text-gov-navy transition-colors"></i>
+                                        <span class="text-[11px] font-semibold text-slate-600">Arsip Foto</span>
+                                    </button>
+                                    <button onclick="switchMenuTab('unggah')" class="p-4 bg-slate-50 border border-slate-200 hover:border-gov-navy rounded-xl flex flex-col items-center justify-center gap-2 group transition-all">
+                                        <i class="fa-solid fa-video text-xl text-slate-400 group-hover:text-gov-navy transition-colors"></i>
+                                        <span class="text-[11px] font-semibold text-slate-600">Arsip Video</span>
+                                    </button>
+                                    <button onclick="switchMenuTab('unggah')" class="p-4 bg-slate-50 border border-slate-200 hover:border-gov-navy rounded-xl flex flex-col items-center justify-center gap-2 group transition-all">
+                                        <i class="fa-solid fa-file-pdf text-xl text-slate-400 group-hover:text-gov-navy transition-colors"></i>
+                                        <span class="text-[11px] font-semibold text-slate-600">Rilis Berita</span>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm">
+                                <div class="flex items-center justify-between mb-1">
+                                    <h4 class="font-bold text-xs text-gov-navy uppercase tracking-wider"><i class="fa-solid fa-chart-simple"></i> Grafik Batang Volume Statistik Arsip (12 Bulan)</h4>
+                                    <span class="text-[10px] text-gov-navy bg-slate-100 font-bold px-2 py-0.5 rounded-md">Cloud Server Live</span>
+                                </div>
+                                <p class="text-[11px] text-slate-400 mb-4">Statistik volume rekapitulasi jumlah unggahan digital otomatis terisi sesuai database.</p>
+                                
+                                <div class="h-28 flex items-end justify-between gap-2.5 pt-4 border-b border-slate-200 px-1">
+                                    <div class="w-full bg-slate-100 rounded-t h-0 transition-all duration-500" title="Jan" id="barBulan1"></div>
+                                    <div class="w-full bg-slate-100 rounded-t h-0 transition-all duration-500" title="Feb" id="barBulan2"></div>
+                                    <div class="w-full bg-slate-100 rounded-t h-0 transition-all duration-500" title="Mar" id="barBulan3"></div>
+                                    <div class="w-full bg-slate-100 rounded-t h-0 transition-all duration-500" title="Apr" id="barBulan4"></div>
+                                    <div class="w-full bg-slate-100 rounded-t h-0 transition-all duration-500" title="Mei" id="barBulan5"></div>
+                                    <div class="w-full bg-slate-100 rounded-t h-0 transition-all duration-500" title="Jun" id="barBulan6"></div>
+                                    <div class="w-full bg-slate-100 rounded-t h-0 transition-all duration-500" title="Jul" id="barBulan7"></div>
+                                    <div class="w-full bg-slate-100 rounded-t h-0 transition-all duration-500" title="Agt" id="barBulan8"></div>
+                                    <div class="w-full bg-slate-100 rounded-t h-0 transition-all duration-500" title="Sep" id="barBulan9"></div>
+                                    <div class="w-full bg-slate-100 rounded-t h-0 transition-all duration-500" title="Okt" id="barBulan10"></div>
+                                    <div class="w-full bg-slate-100 rounded-t h-0 transition-all duration-500" title="Nov" id="barBulan11"></div>
+                                    <div class="w-full bg-slate-100 rounded-t h-0 transition-all duration-500" title="Des" id="barBulan12"></div>
+                                </div>
+                                <div class="flex justify-between text-[10px] text-slate-400 mt-2 font-semibold uppercase px-1">
+                                    <span>Jan</span><span>Feb</span><span>Mar</span><span>Apr</span><span>Mei</span><span>Jun</span>
+                                    <span>Jul</span><span>Agt</span><span>Sep</span><span>Okt</span><span>Nov</span><span>Des</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm flex flex-col">
+                            <h4 class="font-bold text-xs text-gov-navy mb-1 uppercase tracking-wider flex items-center justify-between">
+                                <span><i class="fa-solid fa-calendar-days text-gov-gold"></i> Kalender Kegiatan & Catatan</span>
+                                <i class="fa-solid fa-cloud-arrow-up text-emerald-600 text-sm"></i>
+                            </h4>
+                            <p class="text-[11px] text-slate-400 mb-3">Papan memorandum bersama tim Humas Lapas yang tersimpan permanen lintas komputer.</p>
+                            
+                            <div id="notesContainerBox" class="space-y-2.5 flex-1 overflow-y-auto max-h-56 pr-1">
+                                <p class="text-xs text-slate-400 italic text-center py-6">Catatan agenda kosong.</p>
+                            </div>
+
+                            <div class="mt-3 pt-3 border-t border-slate-100 space-y-2">
+                                <input type="text" id="inputCatatanTeksBaru" class="w-full px-3 py-2 text-xs border border-slate-200 rounded-xl focus:outline-none focus:ring-1 focus:ring-blue-900" placeholder="Ketik agenda memorandum humas baru...">
+                                <button onclick="tambahCatatanAgendaBaru()" class="w-full bg-gov-navy text-white text-xs font-bold py-2 rounded-xl hover:bg-slate-800 transition-colors">Sematkan Catatan</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm">
+                        <h4 class="font-bold text-xs text-gov-navy mb-3 uppercase tracking-wider"><i class="fa-solid fa-clock-rotate-left"></i> Unggahan Arsip Terkini</h4>
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-left text-xs">
+                                <thead>
+                                    <tr class="bg-slate-50 text-slate-500 uppercase border-b border-slate-200/60">
+                                        <th class="p-3 font-semibold">Nama Dokumentasi / Kegiatan</th>
+                                        <th class="p-3 font-semibold">Tanggal Kegiatan</th>
+                                        <th class="p-3 font-semibold">Jenis Berkas</th>
+                                        <th class="p-3 font-semibold">Kelompok Kategori</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="tbodyArsipDashboardTerkini">
+                                    <tr>
+                                        <td colspan="4" class="p-4 text-center text-slate-400 italic">Belum ada dokumen yang terdaftar di server cloud.</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </section>
+
+                <section id="view-arsip" class="hidden space-y-6">
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                        <div>
+                            <h2 class="text-xl font-bold text-gov-navy">Manajemen Kelompok Dokumen</h2>
+                            <p class="text-xs text-slate-400 mt-0.5">Basis data utama tabel arsip digital kehumasan Lapas Kelas III Rangkasbitung.</p>
+                        </div>
+                        
+                        <div class="flex items-center gap-2 bg-white p-2 border border-slate-200 rounded-xl shadow-sm">
+                            <label class="text-xs font-bold text-slate-500 whitespace-nowrap pl-1"><i class="fa-solid fa-filter text-gov-gold"></i> Filter Kelompok:</label>
+                            <select id="filterKategoriDropdown" onchange="jalankanPenyaringanKategoriTabel()" class="text-xs bg-transparent rounded-lg p-1 font-medium focus:outline-none text-slate-700">
+                                <option value="Semua">Semua Kategori</option>
+                                <option value="Kegiatan Kepala Lapas">Kegiatan Kepala Lapas</option>
+                                <option value="Pembinaan WBP">Pembinaan WBP</option>
+                                <option value="Humas">Humas</option>
+                                <option value="Pengamanan">Pengamanan</option>
+                                <option value="Kunjungan">Kunjungan</option>
+                                <option value="Kegiatan Hari Besar">Kegiatan Hari Besar</option>
+                                <option value="Dokumentasi Internal">Dokumentasi Internal</option>
+                                <option value="Apel">Apel</option>
+                                <option value="Rapat">Rapat</option>
+                                <option value="Lainnya">Lainnya</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-left text-sm">
+                                <thead class="bg-slate-50 text-slate-500 uppercase text-xs border-b border-slate-200">
+                                    <tr>
+                                        <th class="p-4 font-semibold">Nama Dokumen</th>
+                                        <th class="p-4 font-semibold">Tanggal</th>
+                                        <th class="p-4 font-semibold">Jenis</th>
+                                        <th class="p-4 font-semibold">Keterangan / Kelompok</th>
+                                        <th class="p-4 font-semibold text-center">Aksi</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="tbodyTabelMasterArsip" class="divide-y divide-slate-100 text-xs">
+                                    </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </section>
+
+                <section id="view-unggah" class="hidden max-w-2xl mx-auto">
+                    <div class="bg-white rounded-2xl border border-slate-200 shadow-lg p-6 border-t-4 border-gov-navy">
+                        <div class="border-b border-slate-100 pb-3 mb-5">
+                            <h2 class="text-lg font-bold text-gov-navy flex items-center gap-2"><i class="fa-solid fa-cloud-arrow-up text-gov-gold"></i> Unggah Dokumentasi & Berita Rilis</h2>
+                            <p class="text-xs text-slate-400 mt-0.5">Format unggah arsip otomatis terstruktur, permanen, dan terintegrasi sistem penyimpanan Google Drive.</p>
+                        </div>
+
+                        <form id="formPenginputanArsip" onsubmit="handleFormSubmitArsip(event)" class="space-y-4">
+                            <div>
+                                <label class="block text-xs font-bold text-slate-600 mb-1 uppercase tracking-wide">Nama Kegiatan / Judul Rilis Berita</label>
+                                <input type="text" id="formNama" required class="w-full px-4 py-2.5 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-900 text-xs" placeholder="Contoh: Apel Pagi Jajaran Petugas Lapas Kelas III Rangkasbitung">
+                            </div>
+
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-xs font-bold text-slate-600 mb-1 uppercase tracking-wide">Jenis Berkas Dokumentasi (Pilih Salah Satu)</label>
+                                    <select id="formJenis" required class="w-full px-4 py-2.5 border border-slate-200 bg-white rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-900 text-xs text-slate-700">
+                                        <option value="Foto">Foto (Gambar Dokumentasi)</option>
+                                        <option value="Video">Video (Multimedia / Dokumenter Liputan)</option>
+                                        <option value="Dokumen">Dokumen (File PDF / Nota Dinas / Berita Rilis)</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-bold text-slate-600 mb-1 uppercase tracking-wide">Tanggal Kegiatan</label>
+                                    <input type="date" id="formTanggal" required class="w-full px-4 py-2.5 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-900 text-xs text-slate-700">
+                                </div>
+                            </div>
+
+                            <div>
+                                <label class="block text-xs font-bold text-slate-600 mb-1 uppercase tracking-wide">Kategori Kelompok Kegiatan</label>
+                                <select id="formKategori" required class="w-full px-4 py-2.5 border border-slate-200 bg-white rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-900 text-xs text-slate-700">
+                                    <option value="Kegiatan Kepala Lapas">Kegiatan Kepala Lapas</option>
+                                    <option value="Pembinaan WBP">Pembinaan WBP</option>
+                                    <option value="Humas">Humas</option>
+                                    <option value="Pengamanan">Pengamanan</option>
+                                    <option value="Kunjungan">Kunjungan</option>
+                                    <option value="Kegiatan Hari Besar">Kegiatan Hari Besar</option>
+                                    <option value="Dokumentasi Internal">Dokumentasi Internal</option>
+                                    <option value="Apel">Apel</option>
+                                    <option value="Rapat">Rapat</option>
+                                    <option value="Lainnya">Lainnya</option>
+                                </select>
+                            </div>
+
+                            <div>
+                                <label class="block text-xs font-bold text-slate-600 mb-1 uppercase tracking-wide">Keterangan Tambahan Informasi</label>
+                                <textarea id="formKeterangan" rows="3" class="w-full px-4 py-2.5 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-900 text-xs" placeholder="Tulis rincian info tambahan atau ringkasan berita rilis humas..."></textarea>
+                            </div>
+
+                            <div class="p-4 bg-slate-50 border border-slate-200 rounded-xl flex items-center justify-between gap-4">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-10 h-10 bg-blue-50 text-gov-navy rounded-lg flex items-center justify-center text-lg"><i class="fa-brands fa-google-drive"></i></div>
+                                    <div>
+                                        <h5 class="text-xs font-bold text-slate-700">Koneksi Folder Google Drive</h5>
+                                        <p class="text-[10px] text-slate-400">File otomatis tersimpan rapi berdasarkan kategori</p>
+                                    </div>
+                                </div>
+                                <a href="https://drive.google.com/drive/folders/1xR_v7D_r9A-Qo0l88tmrSM6kTQ5h6MUg?usp=sharing" target="_blank" class="text-[11px] font-bold text-blue-600 hover:underline flex items-center gap-1">Buka Cloud Drive <i class="fa-solid fa-arrow-up-right-from-square text-[9px]"></i></a>
+                            </div>
+
+                            <button type="submit" id="btnSimpanArsipSubmit" class="w-full bg-gov-navy hover-gov-navy text-white text-xs font-bold py-3 rounded-xl shadow-md transition-all flex items-center justify-center gap-2">
+                                <i class="fa-solid fa-cloud-arrow-up"></i>
+                                <span>Simpan Permanen & Sinkronisasikan</span>
+                            </button>
+                        </form>
+                    </div>
+                </section>
+
+            </main>
+
+            <footer class="bg-white border-t border-slate-200 px-6 py-4 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs font-semibold text-slate-500 shrink-0">
+                <div class="flex items-center gap-1.5">
+                    <span class="font-bold text-gov-navy">SIGAP HUMAS</span>
+                    <span>&copy; 2026 - LAPAS KELAS III RANGKASBITUNG</span>
+                </div>
+                <div class="bg-gov-gold text-gov-navy px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider shadow-sm">
+                    Pemasyarakatan Pasti Bermanfaat Untuk Masyarakat
+                </div>
+            </footer>
+        </div>
+    </div>
+
+    <script>
+        // State Memori Aplikasi Sementara Sisi Klien
+        let USER_LOGIN_SESSION = null;
+        let ENGINE_LOCAL_ARSIP = [];
+        let ENGINE_LOCAL_NOTES = [];
+
+        // Menjalankan inisialisasi awal sistem saat web terbuka
+        window.addEventListener('DOMContentLoaded', () => {
+            jalankanDetakJamRealtime();
+            tarikDataBawaanDariCloudServer();
+        });
+
+        // Pengatur Jam Digital Real-time Lengkap Hari, Tanggal, Jam
+        function jalankanDetakJamRealtime() {
+            const wadahWaktu = document.getElementById('liveClockWidget');
+            setInterval(() => {
+                const sekarang = new Date();
+                const opsiFormat = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+                const tglId = sekarang.toLocaleDateString('id-ID', opsiFormat);
+                const jamId = sekarang.toTimeString().split(' ')[0];
+                wadahWaktu.innerHTML = `${tglId} | ${jamId} WIB`;
+            }, 1000);
+        }
+
+        // Sinkronisasi data dari Google Script (PropertiesService) ke sisi klien
+        function tarikDataBawaanDariCloudServer() {
+            if (typeof google !== 'undefined' && google.script && google.script.run) {
+                google.script.run.withSuccessHandler(function(response) {
+                    ENGINE_LOCAL_ARSIP = response.arsip || [];
+                    ENGINE_LOCAL_NOTES = response.notes || [];
+                    renderSeluruhKomponenInterface();
+                }).ambilDataServerCloud();
+            } else {
+                // Skenario fallback lingkungan uji coba lokal / github pages
+                renderSeluruhKomponenInterface();
+            }
+        }
+
+        // Autentikasi Pengguna Sesuai Parameter Aturan Sistem
+        function handleProsesLogin(e) {
+            e.preventDefault();
+            const u = document.getElementById('inputUser').value.trim();
+            const p = document.getElementById('inputPass').value;
+            const btn = document.getElementById('btnLoginSubmit');
+            const boxError = document.getElementById('loginErrorMsg');
+
+            btn.disabled = true;
+            btn.innerHTML = `<i class="fa-solid fa-spinner animate-spin"></i> Memvalidasi Kredensial...`;
+            boxError.classList.add('hidden');
+
+            // Skema Pencocokan Akun Statis Instansi Pemerintah
+            if ((u === 'admin' && p === 'lapaskaswow') || (u === 'Pegawai' && p === 'wowpegawai')) {
+                USER_LOGIN_SESSION = {
+                    username: u,
+                    role: u === 'admin' ? 'Admin' : 'User'
+                };
+
+                // Ubah Teks Atribut Profile Sidebar
+                document.getElementById('userAktifNama').innerText = USER_LOGIN_SESSION.username;
+                document.getElementById('userAktifRole').innerText = USER_LOGIN_SESSION.role;
+
+                // Perpindahan Halaman Animasi
+                document.getElementById('loginPage').classList.add('hidden');
+                document.getElementById('mainSystemPage').classList.remove('hidden');
+
+                renderSeluruhKomponenInterface();
+            } else {
+                boxError.classList.remove('hidden');
+                btn.disabled = false;
+                btn.innerHTML = `<span>Masuk ke Aplikasi</span><i class="fa-solid fa-right-to-bracket text-xs"></i>`;
+            }
+        }
+
+        function handleProsesLogout() {
+            USER_LOGIN_SESSION = null;
+            document.getElementById('formLoginUtama').reset();
+            document.getElementById('loginPage').classList.remove('hidden');
+            document.getElementById('mainSystemPage').classList.add('hidden');
+            document.getElementById('btnLoginSubmit').disabled = false;
+            document.getElementById('btnLoginSubmit').innerHTML = `<span>Masuk ke Aplikasi</span><i class="fa-solid fa-right-to-bracket text-xs"></i>`;
+        }
+
+        // Buka Tutup Lipat (Collapsible) Menu Sidebar Layout
+        function toggleSidebarMenu() {
+            const menuSide = document.getElementById('sidebarNav');
+            menuSide.classList.toggle('sidebar-collapsed');
+            menuSide.classList.toggle('w-full');
+            menuSide.classList.toggle('md:w-64');
+        }
+
+        // Pemindahan Navigasi Tab Menu Konten Utama
+        function switchMenuTab(namaTabTarget) {
+            ['dashboard', 'arsip', 'unggah'].forEach(t => {
+                document.getElementById(`view-${t}`).classList.add('hidden');
+                document.getElementById(`menu-${t}`).classList.remove('bg-white/10', 'text-gov-gold');
+                document.getElementById(`menu-${t}`).classList.add('text-slate-300', 'hover:bg-white/5');
+            });
+
+            document.getElementById(`view-${namaTabTarget}`).classList.remove('hidden');
+            document.getElementById(`menu-${namaTabTarget}`).classList.add('bg-white/10', 'text-gov-gold');
+            document.getElementById(`menu-${namaTabTarget}`).classList.remove('text-slate-300', 'hover:bg-white/5');
+        }
+
+        // Menggambar ulang data dinamis di seluruh komponen layar web
+        function renderSeluruhKomponenInterface() {
+            kalkulasiAngkaStatistikWidget(ENGINE_LOCAL_ARSIP);
+            renderTabelRingkasanDashboard(ENGINE_DB_LokalLimit(ENGINE_LOCAL_ARSIP, 3));
+            renderTabelUtamaMasterArsip(ENGINE_LOCAL_ARSIP);
+            renderPapanCatatanNotesKalender();
+            renderGrafikBatangBulanan(ENGINE_LOCAL_ARSIP);
+        }
+
+        // Kalkulasi Angka Dashboard Sesuai Inputan Riil Daftar Arsip (Mulai dari 0)
+        function kalkulasiAngkaStatistikWidget(data) {
+            document.getElementById('statTotalArsip').innerText = data.length;
+            document.getElementById('statTotalFoto').innerText = data.filter(a => a.jenis === 'Foto').length;
+            document.getElementById('statTotalVideo').innerText = data.filter(a => a.jenis === 'Video').length;
+            document.getElementById('statTotalDokumen').innerText = data.filter(a => a.jenis === 'Dokumen').length;
+        }
+
+        // Render Pembatas Array Data untuk Keperluan Dashboard Terkini
+        function ENGINE_DB_LokalLimit(arr, limit) {
+            return arr.slice(0, limit);
+        }
+
+        // Tampilan Tabel Singkat di Halaman Depan Dashboard
+        function renderTabelRingkasanDashboard(data) {
+            const tBody = document.getElementById('tbodyArsipDashboardTerkini');
+            if (data.length === 0) {
+                tBody.innerHTML = `<tr><td colspan="4" class="p-4 text-center text-slate-400 italic">Belum ada dokumen yang terdaftar di server cloud.</td></tr>`;
+                return;
+            }
+            let templateHtml = '';
+            data.forEach(item => {
+                templateHtml += `
+                    <tr class="border-b border-slate-100 hover:bg-slate-50/80">
+                        <td class="p-3 font-semibold text-gov-navy">${item.nama}</td>
+                        <td class="p-3 text-slate-500">${formatFormatTanggalID(item.tanggal)}</td>
+                        <td class="p-3"><span class="px-2 py-0.5 rounded text-[10px] font-bold ${getBadgeStyle(item.jenis)}">${item.jenis}</span></td>
+                        <td class="p-3 text-slate-500 font-medium">${item.kategori}</td>
+                    </tr>
+                `;
+            });
+            tBody.innerHTML = templateHtml;
+        }
+
+        // Render Tabel Manajemen Kelompok Dokumen Utama (Menu 2)
+        function renderTabelUtamaMasterArsip(data) {
+            const tBody = document.getElementById('tbodyTabelMasterArsip');
+            if (data.length === 0) {
+                tBody.innerHTML = `<tr><td colspan="5" class="p-8 text-center text-slate-400 italic">Daftar arsip kosong. Silakan isi data manual melalui menu Unggah Arsip.</td></tr>`;
+                return;
+            }
+            let templateHtml = '';
+            data.forEach(item => {
+                // Pembatasan Aksi Hapus Hanya Untuk Akun Role Admin Sesuai Kriteria Aturan Ketat
+                const komponenTombolHapus = (USER_LOGIN_SESSION && USER_LOGIN_SESSION.role === 'Admin')
+                    ? `<button onclick="prosesHapusArsipServer('${item.id}')" class="bg-rose-50 hover:bg-rose-100 text-rose-600 px-2 py-1 rounded-lg flex items-center gap-1 transition-colors"><i class="fa-solid fa-trash-can text-[11px]"></i> Hapus</button>`
+                    : `<button class="bg-slate-100 text-slate-400 px-2 py-1 rounded-lg cursor-not-allowed opacity-60 flex items-center gap-1" disabled><i class="fa-solid fa-lock text-[10px]"></i> Terkunci</button>`;
+
+                templateHtml += `
+                    <tr class="hover:bg-slate-50/80 transition-colors">
+                        <td class="p-4 font-semibold text-slate-800">
+                            <div class="flex items-center gap-2.5">
+                                <i class="${getIconStyle(item.jenis)} text-slate-400 text-sm"></i>
+                                <span class="line-clamp-2">${item.nama}</span>
+                            </div>
+                        </td>
+                        <td class="p-4 text-slate-500 whitespace-nowrap">${formatFormatTanggalID(item.tanggal)}</td>
+                        <td class="p-4"><span class="px-2 py-0.5 rounded text-[10px] font-bold ${getBadgeStyle(item.jenis)}">${item.jenis}</span></td>
+                        <td class="p-4">
+                            <div class="text-slate-800 font-bold text-[11px]">${item.kategori}</div>
+                            <div class="text-[11px] text-slate-400 line-clamp-1 mt-0.5">${item.keterangan || '-'}</div>
+                        </td>
+                        <td class="p-4">
+                            <div class="flex items-center justify-center gap-1.5">
+                                <a href="${item.linkDrive}" target="_blank" class="bg-blue-50 hover:bg-blue-100 text-gov-navy px-2 py-1 rounded-lg flex items-center gap-1 transition-colors"><i class="fa-solid fa-eye text-[11px]"></i> Lihat</a>
+                                <a href="${item.linkDrive}" target="_blank" class="bg-amber-50 hover:bg-amber-100 text-amber-700 px-2 py-1 rounded-lg flex items-center gap-1 transition-colors"><i class="fa-solid fa-download text-[11px]"></i> Unduh</a>
+                                ${komponenTombolHapus}
+                            </div>
+                        </td>
+                    </tr>
+                `;
+            });
+            tBody.innerHTML = templateHtml;
+        }
+
+        // Kirim Data dari Formulir Input Arsip Baru ke Cloud Server
+        function handleFormSubmitArsip(e) {
+            e.preventDefault();
+            const btn = document.getElementById('btnSimpanArsipSubmit');
+            btn.disabled = true;
+            btn.innerHTML = `<i class="fa-solid fa-spinner animate-spin"></i> Memproses Penyimpanan Cloud...`;
+
+            const paketDataBaru = {
+                nama: document.getElementById('formNama').value.trim(),
+                jenis: document.getElementById('formJenis').value,
+                tanggal: document.getElementById('formTanggal').value,
+                kategori: document.getElementById('formKategori').value,
+                keterangan: document.getElementById('formKeterangan').value.trim(),
+                petugas: USER_LOGIN_SESSION ? USER_LOGIN_SESSION.username : 'Sistem'
+            };
+
+            if (typeof google !== 'undefined' && google.script && google.script.run) {
+                google.script.run.withSuccessHandler(function(response) {
+                    if (response.success) {
+                        ENGINE_LOCAL_ARSIP = response.data;
+                        alert("Arsip berhasil tersimpan selamanya di cloud server!");
+                        bersihkanFormDanRedirect();
+                    }
+                }).simpanArsipKeCloud(paketDataBaru);
+            } else {
+                // Fallback Simulasi GitHub Pages / Non-Google Apps Script environment
+                paketDataBaru.id = "DUMMY-" + Date.now();
+                paketDataBaru.linkDrive = "https://drive.google.com/drive/folders/1xR_v7D_r9A-Qo0l88tmrSM6kTQ5h6MUg?usp=sharing";
+                ENGINE_LOCAL_ARSIP.unshift(paketDataBaru);
+                alert("[SIMULASI BROWSER] Berhasil disimulasikan ke memori sistem lokal.");
+                bersihkanFormDanRedirect();
+            }
+        }
+
+        function bersihkanFormDanRedirect() {
+            document.getElementById('formPenginputanArsip').reset();
+            document.getElementById('btnSimpanArsipSubmit').disabled = false;
+            document.getElementById('btnSimpanArsipSubmit').innerHTML = `<i class="fa-solid fa-cloud-arrow-up"></i> <span>Simpan Permanen & Sinkronisasikan</span>`;
+            switchMenuTab('arsip');
+            renderSeluruhKomponenInterface();
+        }
+
+        // Hapus Arsip Permanen Server Cloud
+        function prosesHapusArsipServer(id) {
+            if (!confirm("Peringatan Instansi: Apakah Anda yakin ingin menghapus data dokumen kehumasan ini selamanya dari server?")) return;
+
+            if (typeof google !== 'undefined' && google.script && google.script.run) {
+                google.script.run.withSuccessHandler(function(response) {
+                    ENGINE_LOCAL_ARSIP = response.data;
+                    renderSeluruhKomponenInterface();
+                }).hapusArsipDiCloud(id);
+            } else {
+                ENGINE_LOCAL_ARSIP = ENGINE_LOCAL_ARSIP.filter(a => a.id !== id);
+                renderSeluruhKomponenInterface();
+            }
+        }
+
+        // Manajemen List Papan Catatan/Notes Agenda
+        function renderPapanCatatanNotesKalender() {
+            const wadahBox = document.getElementById('notesContainerBox');
+            if (ENGINE_LOCAL_NOTES.length === 0) {
+                wadahBox.innerHTML = `<p class="text-xs text-slate-400 italic text-center py-6">Catatan agenda kosong.</p>`;
+                return;
+            }
+            let isiHtml = '';
+            ENGINE_LOCAL_NOTES.forEach((note, index) => {
+                isiHtml += `
+                    <div class="p-2.5 bg-slate-50 border-l-4 border-gov-gold rounded-r-xl flex items-start justify-between gap-2 border border-slate-200/40 shadow-sm">
+                        <div class="text-xs">
+                            <p class="font-semibold text-slate-800 leading-normal">${note.teks}</p>
+                            <span class="text-[9px] text-slate-400 block mt-1"><i class="fa-solid fa-user-pen text-[8px]"></i> Input: ${note.author}</span>
+                        </div>
+                        <button onclick="hapusCatatanAgendaIndex(${index})" class="text-slate-300 hover:text-rose-500 transition-colors"><i class="fa-solid fa-circle-xmark text-xs"></i></button>
+                    </div>
+                `;
+            });
+            wadahBox.innerHTML = isiHtml;
+        }
+
+        function tambahCatatanAgendaBaru() {
+            const inputField = document.getElementById('inputCatatanTeksBaru');
+            const teksValue = inputField.value.trim();
+            if (!teksValue) return;
+
+            const simpanObjekNote = {
+                teks: teksValue,
+                author: USER_LOGIN_SESSION ? USER_LOGIN_SESSION.username : 'Petugas'
+            };
+
+            ENGINE_LOCAL_NOTES.push(simpanObjekNote);
+            inputField.value = '';
+            renderPapanCatatanNotesKalender();
+
+            if (typeof google !== 'undefined' && google.script && google.script.run) {
+                google.script.run.simpanNotesKeCloud(ENGINE_LOCAL_NOTES);
+            }
+        }
+
+        function hapusCatatanAgendaIndex(idSaring) {
+            ENGINE_LOCAL_NOTES.splice(idSaring, 1);
+            renderPapanCatatanNotesKalender();
+            if (typeof google !== 'undefined' && google.script && google.script.run) {
+                google.script.run.simpanNotesKeCloud(ENGINE_LOCAL_NOTES);
+            }
+        }
+
+        // Fitur Filter Dropdown Pencarian Kategori Manual (Menu 2)
+        function jalankanPenyaringanKategoriTabel() {
+            const filterValue = document.getElementById('filterKategoriDropdown').value;
+            if (filterValue === 'Semua') {
+                renderTabelUtamaMasterArsip(ENGINE_LOCAL_ARSIP);
+            } else {
+                const saringData = ENGINE_LOCAL_ARSIP.filter(a => a.kategori === filterValue);
+                renderTabelUtamaMasterArsip(saringData);
+            }
+        }
+
+        // Fitur Global Real-time Search Engine Bar Header
+        function jalankanPencarianGlobal(kataKunci) {
+            const kueri = kataKunci.toLowerCase().trim();
+            const hasilSaring = ENGINE_LOCAL_ARSIP.filter(item => {
+                return item.nama.toLowerCase().includes(kueri) || 
+                       item.jenis.toLowerCase().includes(kueri) || 
+                       item.tanggal.includes(kueri);
+            });
+            renderTabelUtamaMasterArsip(hasilSaring);
+            renderTabelRingkasanDashboard(ENGINE_DB_LokalLimit(hasilSaring, 3));
+        }
+
+        // Render Grafik Batang Dinamis Sesuai Volume Angka Inputan Arsip
+        function renderGrafikBatangBulanan(data) {
+            const hitungBulan = Array(12).fill(0);
+            data.forEach(item => {
+                if (item.tanggal) {
+                    const blnIdx = new Date(item.tanggal).getMonth();
+                    if (blnIdx >= 0 && blnIdx < 12) hitungBulan[blnIdx]++;
+                }
+            });
+
+            const nilaiMaks = Math.max(...hitungBulan, 1);
+            for (let i = 0; i < 12; i++) {
+                const barElement = document.getElementById(`barBulan${i + 1}`);
+                if (barElement) {
+                    const tinggiPersen = (hitungBulan[i] / nilaiMaks) * 100;
+                    barElement.style.height = hitungBulan[i] > 0 ? `calc(${tinggiPersen}% + 6px)` : '4px';
+                    barElement.title = `${hitungBulan[i]} Unggahan`;
+                    
+                    if (hitungBulan[i] > 0) {
+                        barElement.classList.remove('bg-slate-100');
+                        barElement.classList.add('bg-gov-navy');
+                    } else {
+                        barElement.classList.add('bg-slate-100');
+                        barElement.classList.remove('bg-gov-navy');
+                    }
+                }
+            }
+        }
+
+        // Helper Utilitas Parsing UI/UX
+        function formatFormatTanggalID(stringTgl) {
+            if (!stringTgl) return '-';
+            const parsDate = new Date(stringTgl);
+            if (isNaN(parsDate.getTime())) return stringTgl;
+            return parsDate.toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' });
+        }
+
+        function getBadgeStyle(jenis) {
+            if (jenis === 'Foto') return 'bg-amber-100 text-amber-800';
+            if (jenis === 'Video') return 'bg-rose-100 text-rose-800';
+            return 'bg-emerald-100 text-emerald-800';
+        }
+
+        function getIconStyle(jenis) {
+            if (jenis === 'Foto') return 'fa-solid fa-file-image';
+            if (jenis === 'Video') return 'fa-solid fa-file-video';
+            return 'fa-solid fa-file-pdf';
+        }
+    </script>
+</body>
+</html>
